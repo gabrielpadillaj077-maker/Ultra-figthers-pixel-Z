@@ -1,0 +1,392 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+
+body{
+    background:#000;
+    overflow:hidden;
+}
+
+
+
+canvas{
+    display:block;
+    margin:auto;
+    background:#87CEEB;
+}
+
+
+
+/* ================= MENU ================= */
+
+
+#menu{
+
+    position:absolute;
+    width:100%;
+    height:100%;
+
+    top:0;
+    left:0;
+
+    background:
+    linear-gradient(
+        #101050,
+        #000
+    );
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    color:white;
+
+    z-index:10;
+
+}
+
+
+
+#menu h1{
+
+    font-size:60px;
+
+    color:#FFD700;
+
+    text-shadow:
+    0 0 10px orange,
+    0 0 30px yellow;
+
+    margin-bottom:40px;
+
+}
+
+
+
+button{
+
+    padding:15px 40px;
+
+    margin:10px;
+
+    border-radius:10px;
+
+    border:3px solid white;
+
+    background:
+    linear-gradient(
+        orange,
+        gold
+    );
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+
+
+button:hover{
+
+    transform:scale(1.1);
+
+}
+
+
+
+/* ================= PERSONAJES ================= */
+
+
+#characterBox{
+
+    display:none;
+
+    text-align:center;
+
+}
+
+
+
+#characters{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    width:600px;
+
+    justify-content:center;
+
+}
+
+
+
+.character{
+
+    width:90px;
+
+    height:120px;
+
+    margin:10px;
+
+    background:#222;
+
+    border:3px solid gray;
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex-direction:column;
+
+    cursor:pointer;
+
+}
+
+
+
+.character:hover,
+.selected{
+
+    border-color:#00FFFF;
+
+    box-shadow:
+    0 0 20px cyan;
+
+}
+
+
+
+
+
+/* ================= HUD ================= */
+
+
+
+#hud{
+
+    position:absolute;
+
+    top:20px;
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    padding:20px;
+
+    pointer-events:none;
+
+}
+
+
+
+.player{
+
+    width:35%;
+
+}
+
+
+
+.player.right{
+
+    text-align:right;
+
+}
+
+
+
+h3{
+
+    color:white;
+
+    text-shadow:
+    2px 2px black;
+
+}
+
+
+
+/* VIDA */
+
+
+.bar{
+
+    height:30px;
+
+    background:#333;
+
+    border:3px solid white;
+
+}
+
+
+
+.bar div{
+
+    height:100%;
+
+    width:100%;
+
+    background:
+
+    linear-gradient(
+    90deg,
+    green,
+    yellow,
+    red
+    );
+
+}
+
+
+
+
+/* KI */
+
+
+.ki{
+
+    height:15px;
+
+    background:#111;
+
+    border:2px solid cyan;
+
+    margin-top:10px;
+
+}
+
+
+
+.ki div{
+
+    height:100%;
+
+    width:0%;
+
+    background:
+
+    linear-gradient(
+    90deg,
+    blue,
+    cyan,
+    white
+    );
+
+}
+
+
+
+/* ================= MENSAJES ================= */
+
+
+
+#message{
+
+    position:absolute;
+
+    top:45%;
+
+    width:100%;
+
+    text-align:center;
+
+    font-size:50px;
+
+    color:white;
+
+    text-shadow:
+    0 0 20px gold;
+
+    display:none;
+
+}
+
+
+
+
+/* ================= CONTROLES ================= */
+
+
+#mobileControls{
+
+    position:absolute;
+
+    bottom:20px;
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    padding:20px;
+
+}
+
+
+
+#mobileControls button{
+
+    width:70px;
+
+    height:70px;
+
+    border-radius:50%;
+
+    background:
+    rgba(0,255,255,0.3);
+
+    color:white;
+
+    border:3px solid cyan;
+
+}
+
+
+
+.left,
+.right{
+
+    display:flex;
+
+    gap:10px;
+
+}
+
+
+
+.right button{
+
+    border-color:orange;
+
+    background:
+    rgba(255,100,0,.4);
+
+}
+
+
+
+/* ocultar controles al inicio */
+
+#mobileControls{
+
+    display:none;
+
+}
