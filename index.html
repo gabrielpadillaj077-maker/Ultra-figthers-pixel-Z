@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Ultra Fighters Pixel Z v2</title>
+<title>Ultra Warriors Z - Vuelo Libre</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
@@ -64,7 +64,7 @@ canvas {
     box-shadow: 0 0 25px #FFD700;
 }
 .char canvas { border: none; width: 80px; height: 80px; }
-.char-name { margin-top: 8px; font-size: 11px; color: #FFD700; }
+.char-name { margin-top: 8px; font-size: 10px; color: #FFD700; text-align: center; }
 button {
     padding: 15px 40px;
     font-size: 24px;
@@ -127,7 +127,7 @@ button:hover { transform: scale(1.05); }
 }
 .health-text.p1 { left: 20px; }
 .health-text.p2 { right: 20px; }
-.special-bar {
+.ki-bar {
     position: absolute;
     top: 90px;
     width: 200px;
@@ -135,11 +135,11 @@ button:hover { transform: scale(1.05); }
     border: 2px solid #fff;
     background: #000;
 }
-.special-bar.p1 { left: 20px; }
-.special-bar.p2 { right: 20px; }
-.special-fill {
+.ki-bar.p1 { left: 20px; }
+.ki-bar.p2 { right: 20px; }
+.ki-fill {
     height: 100%;
-    background: linear-gradient(90deg, #9400D3, #FF00FF);
+    background: linear-gradient(90deg, #00BFFF, #00FFFF);
     width: 0%;
     transition: width 0.2s;
 }
@@ -153,59 +153,70 @@ button:hover { transform: scale(1.05); }
     font-weight: bold;
     text-shadow: 3px 3px 0 #000;
 }
+.flight-indicator {
+    position: absolute;
+    top: 110px;
+    color: #00FFFF;
+    font-size: 14px;
+    font-weight: bold;
+}
+.flight-indicator.p1 { left: 20px; }
+.flight-indicator.p2 { right: 20px; }
 </style>
 </head>
 <body>
 <canvas id="game" width="900" height="500"></canvas>
-<div class="round-text" id="roundText">ROUND 1</div>
+<div class="round-text" id="roundText">BATALLA Z</div>
 
 <div class="menu" id="menu">
-    <h1>ULTRA FIGHTERS PIXEL Z v2</h1>
+    <h1>ULTRA WARRIORS Z</h1>
 
     <div class="mode-select">
         <button onclick="setMode('vsai')">VS CPU</button>
         <button onclick="setMode('vs2p')">2 JUGADORES</button>
     </div>
 
-    <p style="margin-bottom: 10px; font-size: 18px;">P1 elige guerrero:</p>
+    <p style="margin-bottom: 10px; font-size: 18px;">Elige tu Guerrero Z:</p>
     <div class="char-grid">
-        <div class="char" data-char="0"><canvas id="p0"></canvas><div class="char-name">PYRO</div></div>
-        <div class="char" data-char="1"><canvas id="p1"></canvas><div class="char-name">FROST</div></div>
-        <div class="char" data-char="2"><canvas id="p2"></canvas><div class="char-name">STORM</div></div>
-        <div class="char" data-char="3"><canvas id="p3"></canvas><div class="char-name">DARK</div></div>
-        <div class="char" data-char="4"><canvas id="p4"></canvas><div class="char-name">LIGHT</div></div>
-        <div class="char" data-char="5"><canvas id="p5"></canvas><div class="char-name">METAL</div></div>
-        <div class="char" data-char="6"><canvas id="p6"></canvas><div class="char-name">VENOM</div></div>
-        <div class="char" data-char="7"><canvas id="p7"></canvas><div class="char-name">NOVA</div></div>
+        <div class="char" data-char="0"><canvas id="p0"></canvas><div class="char-name">KAROT<br>Traje Naranja</div></div>
+        <div class="char" data-char="1"><canvas id="p1"></canvas><div class="char-name">VEGETA<br>Armadura Azul</div></div>
+        <div class="char" data-char="2"><canvas id="p2"></canvas><div class="char-name">PICCOLO<br>Verde Guerrero</div></div>
+        <div class="char" data-char="3"><canvas id="p3"></canvas><div class="char-name">GOHAN<br>Chico de Pelo</div></div>
+        <div class="char" data-char="4"><canvas id="p4"></canvas><div class="char-name">TRUNKS<br>Espada Futuro</div></div>
+        <div class="char" data-char="5"><canvas id="p5"></canvas><div class="char-name">CELL<br>Perfecto Verde</div></div>
+        <div class="char" data-char="6"><canvas id="p6"></canvas><div class="char-name">FREEZER<br>Forma Final</div></div>
+        <div class="char" data-char="7"><canvas id="p7"></canvas><div class="char-name">BUU<br>Rosa Mágico</div></div>
     </div>
 
-    <button onclick="startGame()">PELEAR!</button>
-    <p style="margin-top: 15px; font-size: 13px; color: #aaa; text-align: center;">
-        P1: A/D mover, W saltar + DOBLE SALTO, J puño, K patada, L ESPECIAL<br>
-        P2: ←/→ mover, ↑ saltar + DOBLE SALTO, 1 puño, 2 patada, 3 ESPECIAL<br>
-        COMBO AÉREO: Salta + J/K en el aire<br>
-        COMBO ESPECIAL: ↓ + L cuando barra morada esté llena
+    <button onclick="startGame()">¡A PELEAR!</button>
+    <p style="margin-top: 15px; font-size: 12px; color: #aaa; text-align: center;">
+        P1: A/D mover, W volar/soltar, S bajar, J ki-blast, K puño, L ONDA KI<br>
+        P2: ←/→ mover, ↑ volar/soltar, ↓ bajar, 1 ki-blast, 2 puño, 3 ONDA KI<br>
+        VUELO: Mantén W/↑ para volar libre por toda la pantalla
     </p>
 </div>
 
 <div class="health-bar p1"><div class="health-fill" id="hp1" style="width: 100%"></div></div>
-<div class="special-bar p1"><div class="special-fill" id="sp1"></div></div>
+<div class="ki-bar p1"><div class="ki-fill" id="ki1"></div></div>
 <div class="health-text p1" id="hpText1">100/100</div>
+<div class="flight-indicator p1" id="flight1"></div>
 
 <div class="health-bar p2"><div class="health-fill" id="hp2" style="width: 100%"></div></div>
-<div class="special-bar p2"><div class="special-fill" id="sp2"></div></div>
+<div class="ki-bar p2"><div class="ki-fill" id="ki2"></div></div>
 <div class="health-text p2" id="hpText2">100/100</div>
+<div class="flight-indicator p2" id="flight2"></div>
 
 <div class="controls" id="controls">
     <div class="left-btns">
         <div class="btn" ontouchstart="keyDown('a')" ontouchend="keyUp('a')">◀</div>
         <div class="btn" ontouchstart="keyDown('w')" ontouchend="keyUp('w')">▲</div>
+        <div class="btn" ontouchstart="keyDown('s')" ontouchend="keyUp('s')">▼</div>
         <div class="btn" ontouchstart="keyDown('d')" ontouchend="keyUp('d')">▶</div>
     </div>
     <div class="right-btns">
-        <div class="btn" ontouchstart="keyDown('j')" ontouchend="keyUp('j')">J</div>
-        <div class="btn" ontouchstart="keyDown('k')" ontouchend="keyUp('k')">K</div>
-        <div class="btn" ontouchstart="keyDown('l')" ontouchend="keyUp('l')">L</div>
+        <div class="btn" ontouchstart="keyDown('j')" ontouchend="keyUp('j')">KI</div>
+        <div class="btn" ontouchstart="keyDown('k')" ontouchend="keyUp('k')">P</div>
+        <div class="btn" ontouchstart="keyDown('l')" ontouchend="keyUp('l')">ONDA</div>
     </div>
 </div>
 
@@ -220,34 +231,24 @@ let selectedChar = 0;
 let gameMode = 'vsai';
 let winner = null;
 let music = null;
-let round = 1;
-let scenarioIndex = 0;
+let kiBlasts = [];
 
-// 8 PERSONAJES
+// 8 GUERREROS Z - INSPIRADOS EN DBZ
 const chars = [
-    { name: 'PYRO', color: '#FF4500', glow: '#FFD700', special: 'LLAMA NUCLEAR' },
-    { name: 'FROST', color: '#00BFFF', glow: '#FFFFFF', special: 'VENTISCA ABSOLUTA' },
-    { name: 'STORM', color: '#9400D3', glow: '#00FF00', special: 'RAYO TRUENO' },
-    { name: 'DARK', color: '#2F2F2F', glow: '#FF00FF', special: 'PUÑO OSCURO' },
-    { name: 'LIGHT', color: '#FFFF00', glow: '#00FFFF', special: 'EXPLOSION SOLAR' },
-    { name: 'METAL', color: '#C0C0C0', glow: '#808080', special: 'PUÑO ACERO' },
-    { name: 'VENOM', color: '#32CD32', glow: '#006400', special: 'TOXINA MORTAL' },
-    { name: 'NOVA', color: '#FF1493', glow: '#FF69B4', special: 'SUPERNOVA' }
-];
-
-// 5 ESCENARIOS QUE CAMBIAN CADA ROUND
-const scenarios = [
-    { bg: 'linear-gradient(to bottom, #87CEEB 0%, #F4A460 100%)', floor: '#8B4513', name: 'TEMPLO' },
-    { bg: 'linear-gradient(to bottom, #1a1a2e 0%, #16213e 100%)', floor: '#0f3460', name: 'NOCTURNO' },
-    { bg: 'linear-gradient(to bottom, #ff6b6b 0%, #ffa500 100%)', floor: '#ff4500', name: 'VOLCÁN' },
-    { bg: 'linear-gradient(to bottom, #74b9ff 0%, #a29bfe 100%)', floor: '#6c5ce7', name: 'CIELO' },
-    { bg: 'linear-gradient(to bottom, #2d3436 0%, #636e72 100%)', floor: '#000', name: 'FUTURISTA' }
+    { name: 'KAROT', color: '#FF8C00', glow: '#FFD700', aura: '#FFA500', special: 'ONDA KI' },
+    { name: 'VEGETA', color: '#4169E1', glow: '#87CEEB', aura: '#1E90FF', special: 'CAÑON KI' },
+    { name: 'PICCOLO', color: '#228B22', glow: '#32CD32', aura: '#00FF00', special: 'MAKANKO' },
+    { name: 'GOHAN', color: '#FF8C00', glow: '#FFD700', aura: '#FFA500', special: 'KAMEHAMEHA' },
+    { name: 'TRUNKS', color: '#8B4513', glow: '#D2691E', aura: '#CD853F', special: 'CORTE KI' },
+    { name: 'CELL', color: '#228B22', glow: '#9ACD32', aura: '#ADFF2F', special: 'KAMEHAMEHA' },
+    { name: 'FREEZER', color: '#9370DB', glow: '#DDA0DD', aura: '#E6E6FA', special: 'DEATH BEAM' },
+    { name: 'BUU', color: '#FF69B4', glow: '#FFB6C1', aura: '#FFC0CB', special: 'KI MÁGICO' }
 ];
 
 // Dibujar previews
 chars.forEach((c, i) => {
     const pc = document.getElementById('p' + i).getContext('2d');
-    drawPixelChar(pc, 40, 60, c.color, c.glow, 1);
+    drawPixelWarrior(pc, 40, 60, c.color, c.glow, 1);
 });
 
 document.querySelectorAll('.char').forEach(el => {
@@ -264,9 +265,9 @@ window.setMode = function(mode) {
     document.getElementById('controls').style.display = mode === 'vsai'? 'flex' : 'none';
 }
 
-function drawPixelChar(ctx, x, y, color, glow, scale = 2) {
-    ctx.fillStyle = glow;
-    ctx.fillRect(x-3, y-10, 6, 6);
+function drawPixelWarrior(ctx, x, y, color, glow, scale = 2) {
+    ctx.fillStyle = glow + '80';
+    ctx.fillRect(x-10, y-15, 20, 30);
     ctx.fillStyle = color;
     ctx.fillRect(x-6*scale, y-12*scale, 12*scale, 12*scale);
     ctx.fillRect(x-4*scale, y, 8*scale, 16*scale);
@@ -279,51 +280,68 @@ function drawPixelChar(ctx, x, y, color, glow, scale = 2) {
     ctx.fillRect(x+1*scale, y-8*scale, 2*scale, 2*scale);
 }
 
-// MÚSICA 8-BIT
 function initMusic() {
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     music = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
     music.connect(gainNode);
     gainNode.connect(audioCtx.destination);
-    gainNode.gain.value = 0.05;
+    gainNode.gain.value = 0.04;
     music.type = 'square';
-    music.frequency.value = 220;
+    music.frequency.value = 330;
     music.start();
 
     let note = 0;
-    const melody = [220, 246, 277, 330, 349, 392, 440, 523];
+    const melody = [330, 392, 440, 523, 659, 587, 523, 440];
     setInterval(() => {
         if(gameStarted && music) {
             music.frequency.value = melody[note % melody.length];
             note++;
         }
-    }, 250);
+    }, 280);
 }
 
-class Fighter {
-    constructor(x, color, glow, isPlayer1) {
+class KiBlast {
+    constructor(x, y, speed, color) {
         this.x = x;
-        this.y = 350;
-        this.w = 45;
-        this.h = 65;
+        this.y = y;
+        this.speed = speed;
+        this.w = 12;
+        this.h = 8;
+        this.color = color;
+    }
+    update() { this.x += this.speed; }
+    draw() {
+        ctx.fillStyle = this.color + 'AA';
+        ctx.fillRect(this.x-5, this.y-5, this.w+10, this.h+10);
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.x, this.y, this.w, this.h);
+    }
+}
+
+class Warrior {
+    constructor(x, color, glow, aura, isPlayer1) {
+        this.x = x;
+        this.y = 250;
+        this.w = 40;
+        this.h = 60;
         this.color = color;
         this.glow = glow;
+        this.aura = aura;
         this.vx = 0;
         this.vy = 0;
-        this.speed = 6;
-        this.jump = -14;
-        this.gravity = 0.7;
-        this.onGround = false;
-        this.jumps = 2; // DOBLE SALTO
-        this.hp = 100;
-        this.sp = 0;
+        this.speed = 5;
+        this.flySpeed = 4;
+        this.gravity = 0.5;
         this.isPlayer1 = isPlayer1;
+        this.hp = 100;
+        this.ki = 100;
+        this.flying = false;
         this.attacking = false;
         this.attackType = '';
         this.attackTimer = 0;
         this.facing = isPlayer1? 1 : -1;
-        this.airCombo = false;
+        this.auraTimer = 0;
     }
 
     update() {
@@ -334,106 +352,118 @@ class Fighter {
             if(keys['a']) { this.vx = -this.speed; this.facing = -1; }
             else if(keys['d']) { this.vx = this.speed; this.facing = 1; }
             else this.vx = 0;
-            if(keys['w']) this.jumpFunc();
-            if(keys['j'] &&!this.attacking) this.attack('punch');
-            if(keys['k'] &&!this.attacking) this.attack('kick');
-            if(keys['l'] &&!this.attacking) {
-                if(this.sp >= 100) this.attack('special');
-                else this.attack('energy');
+
+            if(keys['w']) {
+                this.flying = true;
+                this.vy = -this.flySpeed;
+            } else if(keys['s']) {
+                this.vy = this.flySpeed;
+            } else if(this.flying) {
+                this.vy = 0;
+            } else {
+                this.vy += this.gravity;
             }
+
+            if(keys['j'] &&!this.attacking && this.ki > 5) this.attack('kiblast');
+            if(keys['k'] &&!this.attacking) this.attack('punch');
+            if(keys['l'] &&!this.attacking && this.ki >= 30) this.attack('wave');
         }
         // CONTROLES P2
         else if(gameMode === 'vs2p') {
             if(keys['arrowleft']) { this.vx = -this.speed; this.facing = -1; }
             else if(keys['arrowright']) { this.vx = this.speed; this.facing = 1; }
             else this.vx = 0;
-            if(keys['arrowup']) this.jumpFunc();
-            if(keys['1'] &&!this.attacking) this.attack('punch');
-            if(keys['2'] &&!this.attacking) this.attack('kick');
-            if(keys['3'] &&!this.attacking) {
-                if(this.sp >= 100) this.attack('special');
-                else this.attack('energy');
+
+            if(keys['arrowup']) {
+                this.flying = true;
+                this.vy = -this.flySpeed;
+            } else if(keys['arrowdown']) {
+                this.vy = this.flySpeed;
+            } else if(this.flying) {
+                this.vy = 0;
+            } else {
+                this.vy += this.gravity;
             }
+
+            if(keys['1'] &&!this.attacking && this.ki > 5) this.attack('kiblast');
+            if(keys['2'] &&!this.attacking) this.attack('punch');
+            if(keys['3'] &&!this.attacking && this.ki >= 30) this.attack('wave');
         }
-        // IA VS CPU
+        // IA
         else {
-            if(this.x > player1.x + 60) { this.vx = -this.speed; this.facing = -1; }
-            else if(this.x < player1.x - 60) { this.vx = this.speed; this.facing = 1; }
+            if(this.x > player1.x + 100) { this.vx = -this.speed; this.facing = -1; }
+            else if(this.x < player1.x - 100) { this.vx = this.speed; this.facing = 1; }
             else this.vx = 0;
-            if(Math.random() < 0.03 && this.jumps > 0) this.jumpFunc();
-            if(Math.random() < 0.025 &&!this.attacking) this.attack(Math.random() > 0.5? 'punch' : 'kick');
+            if(Math.random() < 0.02 && this.ki > 5) this.attack('kiblast');
         }
 
-        // Física
-        this.vy += this.gravity;
         this.x += this.vx;
         this.y += this.vy;
 
-        if(this.y + this.h > 400) {
-            this.y = 400 - this.h;
-            this.vy = 0;
-            this.onGround = true;
-            this.jumps = 2;
-            this.airCombo = false;
-        }
-
+        // Límites pantalla completa para vuelo
         if(this.x < 0) this.x = 0;
         if(this.x + this.w > 900) this.x = 900 - this.w;
+        if(this.y < 0) this.y = 0;
+        if(this.y + this.h > 450) this.y = 450 - this.h;
+
+        if(!this.flying && this.y + this.h < 400) {
+            this.vy += this.gravity;
+        }
 
         if(this.attacking) {
             this.attackTimer--;
             if(this.attackTimer <= 0) this.attacking = false;
         }
 
+        if(this.ki < 100) this.ki += 0.2;
+        if(this.flying) this.ki -= 0.3;
+
         this.checkHit();
-
-        if(this.sp < 100) this.sp += 0.1;
-    }
-
-    jumpFunc() {
-        if(this.jumps > 0) {
-            this.vy = this.jump;
-            this.onGround = false;
-            this.jumps--;
-        }
+        if(this.auraTimer > 0) this.auraTimer--;
     }
 
     attack(type) {
         this.attacking = true;
         this.attackType = type;
-        this.attackTimer = type === 'special'? 40 : type === 'kick'? 20 : 15;
+        this.auraTimer = 20;
 
-        if(!this.onGround) this.airCombo = true; // COMBO AÉREO
-
-        if(type === 'special') this.sp = 0;
-        if(type === 'energy') this.sp += 5;
+        if(type === 'kiblast') {
+            this.attackTimer = 10;
+            this.ki -= 5;
+            const blast = new KiBlast(
+                this.x + (this.facing > 0? this.w : -12),
+                this.y + 20,
+                this.facing * 8,
+                this.aura
+            );
+            kiBlasts.push(blast);
+        }
+        if(type === 'punch') {
+            this.attackTimer = 15;
+        }
+        if(type === 'wave') {
+            this.attackTimer = 35;
+            this.ki -= 30;
+        }
     }
 
     checkHit() {
-        if(!this.attacking) return;
+        if(!this.attacking || this.attackType!== 'punch') return;
         const target = this.isPlayer1? player2 : player1;
-        let range = 45;
-        let dmg = 5;
-
-        if(this.attackType === 'kick') { range = 55; dmg = 8; }
-        if(this.attackType === 'energy') { range = 70; dmg = 6; }
-        if(this.attackType === 'special') { range = 100; dmg = 25; }
-        if(this.airCombo) dmg += 3; // BONUS COMBO AÉREO
-
+        const range = 50;
         const hitX = this.x + (this.facing > 0? this.w : -range);
 
         if(hitX < target.x + target.w &&
            hitX + range > target.x &&
            this.y < target.y + target.h &&
            this.y + this.h > target.y) {
-
-            target.hp -= dmg;
+            target.hp -= 8;
             target.hp = Math.max(0, target.hp);
             this.attacking = false;
             updateHealth();
-
             if(target.hp <= 0) {
-                nextRound();
+                winner = this.isPlayer1? chars[selectedChar].name + ' GANA!' : 'ENEMIGO GANA!';
+                setTimeout(() => location.reload(), 4000);
             }
         }
     }
@@ -445,33 +475,32 @@ class Fighter {
             ctx.translate(-900, 0);
         }
 
-        ctx.fillStyle = this.glow + '50';
-        ctx.fillRect(this.x-8, this.y-8, this.w+16, this.h+16);
+        // Aura cuando vuela o ataca
+        if(this.flying || this.auraTimer > 0) {
+            ctx.fillStyle = this.aura + '40';
+            ctx.beginPath();
+            ctx.ellipse(this.x + this.w/2, this.y + this.h/2, this.w + 20, this.h + 20, 0, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        ctx.fillStyle = this.glow + '60';
+        ctx.fillRect(this.x-6, this.y-6, this.w+12, this.h+12);
 
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.w, this.h);
-        ctx.fillRect(this.x+12, this.y-15, 21, 21);
+        ctx.fillRect(this.x+10, this.y-12, 20, 20);
 
         ctx.fillStyle = '#000';
-        ctx.fillRect(this.x+17, this.y-10, 4, 4);
-        ctx.fillRect(this.x+27, this.y-10, 4, 4);
+        ctx.fillRect(this.x+16, this.y-8, 3, 3);
+        ctx.fillRect(this.x+24, this.y-8, 3, 3);
 
-        if(this.attacking) {
-            if(this.attackType === 'special') {
-                ctx.fillStyle = '#FF00FF';
-                ctx.fillRect(this.x - 50, this.y - 20, 150, 100);
-                ctx.fillStyle = '#FFFFFF';
-                ctx.font = '20px Courier New';
-                ctx.fillText(chars[selectedChar].special, this.x - 30, this.y + 30);
-            } else {
-                ctx.fillStyle = this.attackType === 'kick'? '#FF0000' : '#FFFF00';
-                const attackX = this.facing > 0? this.x + this.w : this.x - 40;
-                ctx.fillRect(attackX, this.y + 20, 40, 12);
-                if(this.airCombo) {
-                    ctx.fillStyle = '#00FFFF';
-                    ctx.fillRect(attackX, this.y + 5, 30, 8);
-                }
-            }
+        if(this.attacking && this.attackType === 'wave') {
+            ctx.fillStyle = this.aura + 'CC';
+            ctx.fillRect(this.x + (this.facing > 0? this.w : -80), this.y + 15, 80, 30);
+            ctx.fillStyle = '#FFF';
+            ctx.font = '18px Courier New';
+            ctx.fillText(this.attackType === 'wave'? chars[selectedChar].special : '',
+                this.x + (this.facing > 0? this.w + 10 : -70), this.y + 35);
         }
         ctx.restore();
     }
@@ -480,55 +509,48 @@ class Fighter {
 function updateHealth() {
     document.getElementById('hp1').style.width = player1.hp + '%';
     document.getElementById('hp2').style.width = player2.hp + '%';
-    document.getElementById('sp1').style.width = player1.sp + '%';
-    document.getElementById('sp2').style.width = player2.sp + '%';
+    document.getElementById('ki1').style.width = player1.ki + '%';
+    document.getElementById('ki2').style.width = player2.ki + '%';
     document.getElementById('hpText1').textContent = player1.hp + '/100';
     document.getElementById('hpText2').textContent = player2.hp + '/100';
-}
-
-function nextRound() {
-    round++;
-    scenarioIndex = (round - 1) % scenarios.length;
-    document.getElementById('roundText').textContent = 'ROUND ' + round + ' - ' + scenarios[scenarioIndex].name;
-
-    // Reset players
-    player1.hp = 100;
-    player2.hp = 100;
-    player1.sp = 0;
-    player2.sp = 0;
-    player1.x = 180;
-    player2.x = 680;
-    player1.y = 350;
-    player2.y = 350;
-
-    updateHealth();
-
-    if(round > 5) {
-        winner = chars[selectedChar].name + ' CAMPEÓN!';
-        setTimeout(() => location.reload(), 4000);
-    }
-}
-
-function drawScenario() {
-    const sc = scenarios[scenarioIndex];
-    canvas.style.background = sc.bg;
-    ctx.fillStyle = sc.floor;
-    ctx.fillRect(0, 400, 900, 100);
-
-    // Detalles del escenario
-    ctx.fillStyle = '#fff3';
-    for(let i = 0; i < 20; i++) {
-        ctx.fillRect(i * 45, 380 + Math.sin(Date.now()/500 + i) * 10, 20, 20);
-    }
+    document.getElementById('flight1').textContent = player1.flying? 'VOLANDO' : '';
+    document.getElementById('flight2').textContent = player2.flying? 'VOLANDO' : '';
 }
 
 function gameLoop() {
     ctx.clearRect(0, 0, 900, 500);
-    drawScenario();
+    // Fondo espacio/cielo
+    const gradient = ctx.createLinearGradient(0, 0, 0, 500);
+    gradient.addColorStop(0, '#0a0a2a');
+    gradient.addColorStop(1, '#1a1a4a');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 900, 500);
+
+    // Estrellas
+    ctx.fillStyle = '#fff';
+    for(let i = 0; i < 50; i++) {
+        ctx.fillRect((i*18) % 900, (i*11) % 500, 2, 2);
+    }
 
     if(gameStarted) {
         player1.update();
         player2.update();
+
+        // Update Ki Blasts
+        kiBlasts = kiBlasts.filter(blast => {
+            blast.update();
+            blast.draw();
+
+            const target = blast.speed > 0? player2 : player1;
+            if(blast.x > target.x && blast.x < target.x + target.w &&
+               blast.y > target.y && blast.y < target.y + target.h) {
+                target.hp -= 6;
+                updateHealth();
+                return false;
+            }
+            return blast.x > -20 && blast.x < 920;
+        });
+
         player1.draw();
         player2.draw();
 
@@ -540,7 +562,7 @@ function gameLoop() {
             ctx.textAlign = 'center';
             ctx.fillText(winner, 450, 250);
             ctx.font = '24px Courier New';
-            ctx.fillText('Reiniciando en 4s...', 450, 300);
+            ctx.fillText('Reiniciando...', 450, 300);
         }
     }
     requestAnimationFrame(gameLoop);
@@ -548,15 +570,13 @@ function gameLoop() {
 
 window.startGame = function() {
     document.getElementById('menu').style.display = 'none';
-    document.getElementById('roundText').style.display = 'block';
     const char = chars[selectedChar];
-    player1 = new Fighter(180, char.color, char.glow, true);
-    player2 = new Fighter(680, gameMode === 'vs2p'? '#00FF00' : '#666', '#AAA', false);
+    player1 = new Warrior(200, char.color, char.glow, char.aura, true);
+    player2 = new Warrior(660, gameMode === 'vs2p'? '#00FF88' : '#888', '#AAA', '#CCC', false);
     gameStarted = true;
     initMusic();
 }
 
-// Controles
 window.keyDown = function(k) { keys[k] = true; }
 window.keyUp = function(k) { keys[k] = false; }
 
@@ -565,6 +585,7 @@ document.addEventListener('keydown', e => {
     if(key === 'arrowleft') keys['arrowleft'] = true;
     else if(key === 'arrowright') keys['arrowright'] = true;
     else if(key === 'arrowup') keys['arrowup'] = true;
+    else if(key === 'arrowdown') keys['arrowdown'] = true;
     else keys[key] = true;
 });
 document.addEventListener('keyup', e => {
@@ -572,6 +593,7 @@ document.addEventListener('keyup', e => {
     if(key === 'arrowleft') keys['arrowleft'] = false;
     else if(key === 'arrowright') keys['arrowright'] = false;
     else if(key === 'arrowup') keys['arrowup'] = false;
+    else if(key === 'arrowdown') keys['arrowdown'] = false;
     else keys[key] = false;
 });
 
