@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Ultra Warriors Z - Vuelo Libre</title>
+<title>Ultra Warriors Z - Battle Royale</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
@@ -15,12 +15,12 @@ body {
 canvas {
     display: block;
     margin: 0 auto;
-    border: 4px solid #fff;
+    border: 4px solid #FFD700;
 }
 .menu {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.95);
+    background: linear-gradient(to bottom, #1a1a4a 0%, #0a0a2a 100%);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -29,27 +29,49 @@ canvas {
     z-index: 10;
 }
 .menu h1 {
-    font-size: 48px;
+    font-size: 52px;
     color: #FFD700;
-    text-shadow: 4px 4px 0 #FF4500;
-    margin-bottom: 20px;
-    animation: glow 1s ease-in-out infinite alternate;
+    text-shadow: 4px 4px 0 #FF4500, 0 0 30px #FFD700;
+    margin-bottom: 30px;
+    animation: glow 1.5s ease-in-out infinite alternate;
 }
 @keyframes glow {
     from { text-shadow: 4px 4px 0 #FF4500; }
-    to { text-shadow: 4px 4px 0 #FF4500, 0 0 30px #FFD700; }
+    to { text-shadow: 4px 4px 0 #FF4500, 0 0 40px #FFD700; }
 }
-.char-grid {
+.mode-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: 1fr;
     gap: 15px;
     margin: 20px 0;
-    max-width: 700px;
+}
+.menu button {
+    padding: 18px 60px;
+    font-size: 22px;
+    background: linear-gradient(135deg, #FF4500, #FFD700);
+    border: 4px solid #fff;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255,215,0,0.5);
+}
+.menu button:hover { transform: scale(1.08); box-shadow: 0 0 30px #FFD700; }
+.char-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin: 20px 0;
+    max-width: 900px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
 }
 .char {
-    width: 120px;
-    height: 160px;
-    border: 4px solid #555;
+    width: 100px;
+    height: 140px;
+    border: 3px solid #555;
     cursor: pointer;
     background: #222;
     display: flex;
@@ -57,27 +79,16 @@ canvas {
     align-items: center;
     justify-content: center;
     transition: 0.2s;
+    border-radius: 8px;
 }
 .char:hover,.char.selected {
-    border-color: #FFD700;
-    transform: scale(1.1);
-    box-shadow: 0 0 25px #FFD700;
+    border-color: #00FFFF;
+    transform: scale(1.15);
+    box-shadow: 0 0 25px #00FFFF;
+    background: #333;
 }
-.char canvas { border: none; width: 80px; height: 80px; }
-.char-name { margin-top: 8px; font-size: 10px; color: #FFD700; text-align: center; }
-button {
-    padding: 15px 40px;
-    font-size: 24px;
-    background: linear-gradient(135deg, #FF4500, #FFD700);
-    border: 4px solid #fff;
-    color: #000;
-    font-weight: bold;
-    cursor: pointer;
-    margin: 10px;
-    font-family: 'Courier New', monospace;
-}
-button:hover { transform: scale(1.05); }
-.mode-select { display: flex; gap: 20px; margin: 20px 0; }
+.char canvas { border: none; width: 70px; height: 70px; }
+.char-name { margin-top: 5px; font-size: 9px; color: #FFD700; text-align: center; }
 .controls {
     position: absolute;
     bottom: 20px;
@@ -90,26 +101,27 @@ button:hover { transform: scale(1.05); }
 .btn {
     width: 70px;
     height: 70px;
-    background: rgba(255,255,255,0.3);
-    border: 3px solid #fff;
+    background: rgba(255,255,255,0.25);
+    border: 3px solid #00FFFF;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
+    font-size: 18px;
     color: #fff;
     font-weight: bold;
     user-select: none;
 }
-.btn:active { background: rgba(255,255,255,0.6); }
-.left-btns,.right-btns { display: flex; gap: 10px; }
+.btn:active { background: rgba(0,255,255,0.6); }
+.left-btns,.right-btns { display: flex; gap: 8px; flex-wrap: wrap; }
 .health-bar {
     position: absolute;
     top: 20px;
-    width: 40%;
-    height: 30px;
-    border: 3px solid #fff;
+    width: 35%;
+    height: 28px;
+    border: 3px solid #FFD700;
     background: #333;
+    border-radius: 5px;
 }
 .health-bar.p1 { left: 20px; }
 .health-bar.p2 { right: 20px; }
@@ -120,91 +132,83 @@ button:hover { transform: scale(1.05); }
 }
 .health-text {
     position: absolute;
-    top: 55px;
-    color: #fff;
-    font-size: 18px;
+    top: 52px;
+    color: #FFD700;
+    font-size: 16px;
     font-weight: bold;
+    text-shadow: 2px 2px 0 #000;
 }
 .health-text.p1 { left: 20px; }
 .health-text.p2 { right: 20px; }
 .ki-bar {
     position: absolute;
-    top: 90px;
+    top: 85px;
     width: 200px;
     height: 15px;
-    border: 2px solid #fff;
+    border: 2px solid #00FFFF;
     background: #000;
+    border-radius: 3px;
 }
 .ki-bar.p1 { left: 20px; }
 .ki-bar.p2 { right: 20px; }
 .ki-fill {
     height: 100%;
-    background: linear-gradient(90deg, #00BFFF, #00FFFF);
+    background: linear-gradient(90deg, #00BFFF, #00FFFF, #FFFFFF);
     width: 0%;
-    transition: width 0.2s;
+    transition: width 0.1s;
 }
-.round-text {
+.power-clash {
     position: absolute;
-    top: 20px;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
+    font-size: 48px;
     color: #FFD700;
-    font-size: 32px;
     font-weight: bold;
-    text-shadow: 3px 3px 0 #000;
+    text-shadow: 0 0 20px #FFF;
+    display: none;
+    z-index: 20;
+    animation: clash 0.5s infinite;
 }
-.flight-indicator {
-    position: absolute;
-    top: 110px;
-    color: #00FFFF;
-    font-size: 14px;
-    font-weight: bold;
+@keyframes clash {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.2); }
 }
-.flight-indicator.p1 { left: 20px; }
-.flight-indicator.p2 { right: 20px; }
 </style>
 </head>
 <body>
-<canvas id="game" width="900" height="500"></canvas>
-<div class="round-text" id="roundText">BATALLA Z</div>
+<canvas id="game" width="1000" height="550"></canvas>
+<div class="power-clash" id="clashText">¡CHOQUE DE PODERES!</div>
 
 <div class="menu" id="menu">
     <h1>ULTRA WARRIORS Z</h1>
 
-    <div class="mode-select">
-        <button onclick="setMode('vsai')">VS CPU</button>
-        <button onclick="setMode('vs2p')">2 JUGADORES</button>
+    <div class="mode-grid">
+        <button onclick="showCharSelect('vsai')">BATALLA VS CPU</button>
+        <button onclick="showCharSelect('vs2p')">2 JUGADORES</button>
+        <button onclick="alert('MODO HISTORIA PRÓXIMAMENTE')">MODO HISTORIA</button>
     </div>
 
-    <p style="margin-bottom: 10px; font-size: 18px;">Elige tu Guerrero Z:</p>
-    <div class="char-grid">
-        <div class="char" data-char="0"><canvas id="p0"></canvas><div class="char-name">KAROT<br>Traje Naranja</div></div>
-        <div class="char" data-char="1"><canvas id="p1"></canvas><div class="char-name">VEGETA<br>Armadura Azul</div></div>
-        <div class="char" data-char="2"><canvas id="p2"></canvas><div class="char-name">PICCOLO<br>Verde Guerrero</div></div>
-        <div class="char" data-char="3"><canvas id="p3"></canvas><div class="char-name">GOHAN<br>Chico de Pelo</div></div>
-        <div class="char" data-char="4"><canvas id="p4"></canvas><div class="char-name">TRUNKS<br>Espada Futuro</div></div>
-        <div class="char" data-char="5"><canvas id="p5"></canvas><div class="char-name">CELL<br>Perfecto Verde</div></div>
-        <div class="char" data-char="6"><canvas id="p6"></canvas><div class="char-name">FREEZER<br>Forma Final</div></div>
-        <div class="char" data-char="7"><canvas id="p7"></canvas><div class="char-name">BUU<br>Rosa Mágico</div></div>
+    <div id="charSelect" style="display:none;">
+        <p style="margin-bottom: 10px; font-size: 18px; color: #00FFFF;">ELIGE TU GUERRERO:</p>
+        <div class="char-grid" id="charGrid"></div>
+        <button onclick="startGame()">¡A PELEAR!</button>
     </div>
 
-    <button onclick="startGame()">¡A PELEAR!</button>
-    <p style="margin-top: 15px; font-size: 12px; color: #aaa; text-align: center;">
-        P1: A/D mover, W volar/soltar, S bajar, J ki-blast, K puño, L ONDA KI<br>
-        P2: ←/→ mover, ↑ volar/soltar, ↓ bajar, 1 ki-blast, 2 puño, 3 ONDA KI<br>
-        VUELO: Mantén W/↑ para volar libre por toda la pantalla
+    <p style="margin-top: 15px; font-size: 11px; color: #aaa; text-align: center; max-width: 800px;">
+        P1: A/D mover + DASH, W volar, S bajar, J ki-blast, K puño, L CARGAR KI<br>
+        P2: ←/→ mover + DASH, ↑ volar, ↓ bajar, 1 ki-blast, 2 puño, 3 CARGAR KI<br>
+        DOBLE TAP A/D = DASH. MANTÉN L/3 PARA CARGAR KI Y HACER CHOQUES ÉPICOS
     </p>
 </div>
 
 <div class="health-bar p1"><div class="health-fill" id="hp1" style="width: 100%"></div></div>
 <div class="ki-bar p1"><div class="ki-fill" id="ki1"></div></div>
 <div class="health-text p1" id="hpText1">100/100</div>
-<div class="flight-indicator p1" id="flight1"></div>
 
 <div class="health-bar p2"><div class="health-fill" id="hp2" style="width: 100%"></div></div>
 <div class="ki-bar p2"><div class="ki-fill" id="ki2"></div></div>
 <div class="health-text p2" id="hpText2">100/100</div>
-<div class="flight-indicator p2" id="flight2"></div>
 
 <div class="controls" id="controls">
     <div class="left-btns">
@@ -215,8 +219,8 @@ button:hover { transform: scale(1.05); }
     </div>
     <div class="right-btns">
         <div class="btn" ontouchstart="keyDown('j')" ontouchend="keyUp('j')">KI</div>
-        <div class="btn" ontouchstart="keyDown('k')" ontouchend="keyUp('k')">P</div>
-        <div class="btn" ontouchstart="keyDown('l')" ontouchend="keyUp('l')">ONDA</div>
+        <div class="btn" ontouchstart="keyDown('k')" ontouchend="keyUp('k')">PUÑO</div>
+        <div class="btn" ontouchstart="keyDown('l')" ontouchend="keyUp('l')">CARGAR</div>
     </div>
 </div>
 
@@ -224,245 +228,235 @@ button:hover { transform: scale(1.05); }
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
-let player1, player2;
-let keys = {};
-let gameStarted = false;
-let selectedChar = 0;
-let gameMode = 'vsai';
-let winner = null;
-let music = null;
-let kiBlasts = [];
+let player1, player2, keys = {}, gameStarted = false, selectedChar = 0, gameMode = 'vsai';
+let winner = null, kiBlasts = [], lastTap = {}, powerClash = false;
 
-// 8 GUERREROS Z - INSPIRADOS EN DBZ
-const chars = [
-    { name: 'KAROT', color: '#FF8C00', glow: '#FFD700', aura: '#FFA500', special: 'ONDA KI' },
-    { name: 'VEGETA', color: '#4169E1', glow: '#87CEEB', aura: '#1E90FF', special: 'CAÑON KI' },
-    { name: 'PICCOLO', color: '#228B22', glow: '#32CD32', aura: '#00FF00', special: 'MAKANKO' },
-    { name: 'GOHAN', color: '#FF8C00', glow: '#FFD700', aura: '#FFA500', special: 'KAMEHAMEHA' },
-    { name: 'TRUNKS', color: '#8B4513', glow: '#D2691E', aura: '#CD853F', special: 'CORTE KI' },
-    { name: 'CELL', color: '#228B22', glow: '#9ACD32', aura: '#ADFF2F', special: 'KAMEHAMEHA' },
-    { name: 'FREEZER', color: '#9370DB', glow: '#DDA0DD', aura: '#E6E6FA', special: 'DEATH BEAM' },
-    { name: 'BUU', color: '#FF69B4', glow: '#FFB6C1', aura: '#FFC0CB', special: 'KI MÁGICO' }
+// 20 GUERREROS ORIGINALES - INSPIRADOS EN ESTILO PIXEL
+const warriors = [
+    { name: 'KAROT', color: '#FF8C00', glow: '#FFD700', aura: '#FFA500', special: 'ONDA KI', desc: 'Saiyan Clásico' },
+    { name: 'VEGETOR', color: '#4169E1', glow: '#87CEEB', aura: '#1E90FF', special: 'CAÑON KI', desc: 'Príncipe Azul' },
+    { name: 'PICOLAR', color: '#228B22', glow: '#32CD32', aura: '#00FF00', special: 'RAYO VERDE', desc: 'Guerrero Verde' },
+    { name: 'GOHAR', color: '#FF8C00', glow: '#FFD700', aura: '#FFA500', special: 'KAMEHAME', desc: 'Chico Poder' },
+    { name: 'TRUNKAR', color: '#8B4513', glow: '#D2691E', aura: '#CD853F', special: 'CORTE ESPADA', desc: 'Espada Futuro' },
+    { name: 'CELLAR', color: '#228B22', glow: '#9ACD32', aura: '#ADFF2F', special: 'KAME PERFECTO', desc: 'Androide Verde' },
+    { name: 'FREZER', color: '#9370DB', glow: '#DDA0DD', aura: '#E6E6FA', special: 'DEATH BEAM', desc: 'Tirano Morado' },
+    { name: 'BUOR', color: '#FF69B4', glow: '#FFB6C1', aura: '#FFC0CB', special: 'KI MÁGICO', desc: 'Mágico Rosa' },
+    { name: 'BLACKAR', color: '#2F4F4F', glow: '#8B0000', aura: '#DC143C', special: 'KI ROSADO', desc: 'Saiyan Oscuro' },
+    { name: 'JIRAN', color: '#696969', glow: '#FF0000', aura: '#FF6347', special: 'PUÑO PODER', desc: 'Guerrero Gris' },
+    { name: 'HITAR', color: '#4B0082', glow: '#9400D3', aura: '#8A2BE2', special: 'TIME SKIP', desc: 'Asesino Morado' },
+    { name: 'BROLYR', color: '#32CD32', glow: '#00FF00', aura: '#ADFF2F', special: 'ERUPCIÓN', desc: 'Saiyan Verde' },
+    { name: 'ZAMASU', color: '#9370DB', glow: '#DDA0DD', aura: '#BA55D3', special: 'KI DIVINO', desc: 'Dios Rosa' },
+    { name: 'ANDRO18', color: '#FFB6C1', glow: '#FF69B4', aura: '#FFC0CB', special: 'KI ELÉCTRICO', desc: 'Androide Rubia' },
+    { name: 'TENSHIN', color: '#F0E68C', glow: '#DAA520', aura: '#B8860B', special: 'TRI-BEAM', desc: '3 Ojos' },
+    { name: 'KRILLAR', color: '#FFDAB9', glow: '#FFE4B5', aura: '#FFDEAD', special: 'DISCO KI', desc: 'Calvo Poder' },
+    { name: 'YAMCHAR', color: '#8B4513', glow: '#A0522D', aura: '#CD853F', special: 'LOBO KI', desc: 'Lobo Desert' },
+    { name: 'TIENSHIN', color: '#F0E68C', glow: '#DAA520', aura: '#B8860B', special: 'CUADRUPLE', desc: '4 Brazos' },
+    { name: 'COOLER', color: '#483D8B', glow: '#6A5ACD', aura: '#7B68EE', special: 'SUPERNOVA', desc: 'Tirano Azul' },
+    { name: 'JANEMBA', color: '#8B0000', glow: '#FF0000', aura: '#DC143C', special: 'KI DEMONIO', desc: 'Demonio Rojo' }
 ];
 
-// Dibujar previews
-chars.forEach((c, i) => {
-    const pc = document.getElementById('p' + i).getContext('2d');
-    drawPixelWarrior(pc, 40, 60, c.color, c.glow, 1);
-});
+// Generar grid de personajes
+function generateCharGrid() {
+    const grid = document.getElementById('charGrid');
+    grid.innerHTML = '';
+    warriors.forEach((w, i) => {
+        const div = document.createElement('div');
+        div.className = 'char';
+        div.dataset.char = i;
+        div.innerHTML = `<canvas id="char${i}"></canvas><div class="char-name">${w.name}<br>${w.desc}</div>`;
+        grid.appendChild(div);
 
-document.querySelectorAll('.char').forEach(el => {
-    el.onclick = () => {
-        document.querySelectorAll('.char').forEach(c => c.classList.remove('selected'));
-        el.classList.add('selected');
-        selectedChar = parseInt(el.dataset.char);
-    };
-});
-document.querySelector('.char').classList.add('selected');
+        setTimeout(() => {
+            const pc = document.getElementById('char' + i).getContext('2d');
+            drawWarriorSprite(pc, 35, 50, w.color, w.glow, 1.5);
+        }, 100);
+    });
 
-window.setMode = function(mode) {
+    document.querySelectorAll('.char').forEach(el => {
+        el.onclick = () => {
+            document.querySelectorAll('.char').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedChar = parseInt(el.dataset.char);
+        };
+    });
+    document.querySelector('.char').classList.add('selected');
+}
+
+function drawWarriorSprite(ctx, x, y, color, glow, scale = 2) {
+    ctx.fillStyle = glow + '80';
+    ctx.fillRect(x-8, y-12, 16, 24);
+    ctx.fillStyle = color;
+    ctx.fillRect(x-5*scale, y-10*scale, 10*scale, 10*scale);
+    ctx.fillRect(x-4*scale, y, 8*scale, 14*scale);
+    ctx.fillRect(x-7*scale, y+3*scale, 3*scale, 9*scale);
+    ctx.fillRect(x+4*scale, y+3*scale, 3*scale, 9*scale);
+    ctx.fillRect(x-4*scale, y+14*scale, 3*scale, 8*scale);
+    ctx.fillRect(x+1*scale, y+14*scale, 3*scale, 8*scale);
+    ctx.fillStyle = '#000';
+    ctx.fillRect(x-2*scale, y-6*scale, 2*scale, 2*scale);
+    ctx.fillRect(x+0*scale, y-6*scale, 2*scale, 2*scale);
+}
+
+window.showCharSelect = function(mode) {
     gameMode = mode;
+    document.querySelector('.mode-grid').style.display = 'none';
+    document.getElementById('charSelect').style.display = 'block';
+    generateCharGrid();
     document.getElementById('controls').style.display = mode === 'vsai'? 'flex' : 'none';
 }
 
-function drawPixelWarrior(ctx, x, y, color, glow, scale = 2) {
-    ctx.fillStyle = glow + '80';
-    ctx.fillRect(x-10, y-15, 20, 30);
-    ctx.fillStyle = color;
-    ctx.fillRect(x-6*scale, y-12*scale, 12*scale, 12*scale);
-    ctx.fillRect(x-4*scale, y, 8*scale, 16*scale);
-    ctx.fillRect(x-8*scale, y+4*scale, 4*scale, 10*scale);
-    ctx.fillRect(x+4*scale, y+4*scale, 4*scale, 10*scale);
-    ctx.fillRect(x-4*scale, y+16*scale, 3*scale, 10*scale);
-    ctx.fillRect(x+1*scale, y+16*scale, 3*scale, 10*scale);
-    ctx.fillStyle = '#000';
-    ctx.fillRect(x-3*scale, y-8*scale, 2*scale, 2*scale);
-    ctx.fillRect(x+1*scale, y-8*scale, 2*scale, 2*scale);
-}
-
-function initMusic() {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    music = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-    music.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    gainNode.gain.value = 0.04;
-    music.type = 'square';
-    music.frequency.value = 330;
-    music.start();
-
-    let note = 0;
-    const melody = [330, 392, 440, 523, 659, 587, 523, 440];
-    setInterval(() => {
-        if(gameStarted && music) {
-            music.frequency.value = melody[note % melody.length];
-            note++;
-        }
-    }, 280);
-}
-
 class KiBlast {
-    constructor(x, y, speed, color) {
-        this.x = x;
-        this.y = y;
-        this.speed = speed;
-        this.w = 12;
-        this.h = 8;
-        this.color = color;
+    constructor(x, y, speed, color, power) {
+        this.x = x; this.y = y; this.speed = speed;
+        this.w = 8 + power/5; this.h = 6 + power/8;
+        this.color = color; this.power = power;
     }
     update() { this.x += this.speed; }
     draw() {
         ctx.fillStyle = this.color + 'AA';
-        ctx.fillRect(this.x-5, this.y-5, this.w+10, this.h+10);
+        ctx.beginPath();
+        ctx.arc(this.x + this.w/2, this.y + this.h/2, this.w/2 + 5, 0, Math.PI*2);
+        ctx.fill();
         ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.w, this.h);
     }
 }
 
 class Warrior {
-    constructor(x, color, glow, aura, isPlayer1) {
-        this.x = x;
-        this.y = 250;
-        this.w = 40;
-        this.h = 60;
-        this.color = color;
-        this.glow = glow;
-        this.aura = aura;
-        this.vx = 0;
-        this.vy = 0;
-        this.speed = 5;
-        this.flySpeed = 4;
-        this.gravity = 0.5;
-        this.isPlayer1 = isPlayer1;
-        this.hp = 100;
-        this.ki = 100;
-        this.flying = false;
-        this.attacking = false;
-        this.attackType = '';
-        this.attackTimer = 0;
-        this.facing = isPlayer1? 1 : -1;
-        this.auraTimer = 0;
+    constructor(x, data, isPlayer1) {
+        this.x = x; this.y = 300; this.w = 40; this.h = 60;
+        this.data = data; this.isPlayer1 = isPlayer1;
+        this.vx = 0; this.vy = 0; this.speed = 5.5; this.flySpeed = 4.5;
+        this.gravity = 0.5; this.hp = 100; this.ki = 100; this.kiPower = 0;
+        this.flying = false; this.attacking = false; this.charging = false;
+        this.facing = isPlayer1? 1 : -1; this.auraTimer = 0;
+        this.dashCooldown = 0; this.lastMove = '';
     }
 
     update() {
-        if(winner) return;
+        if(winner || powerClash) return;
 
         // CONTROLES P1
         if(this.isPlayer1) {
-            if(keys['a']) { this.vx = -this.speed; this.facing = -1; }
-            else if(keys['d']) { this.vx = this.speed; this.facing = 1; }
-            else this.vx = 0;
-
-            if(keys['w']) {
-                this.flying = true;
-                this.vy = -this.flySpeed;
-            } else if(keys['s']) {
-                this.vy = this.flySpeed;
-            } else if(this.flying) {
-                this.vy = 0;
-            } else {
-                this.vy += this.gravity;
-            }
-
-            if(keys['j'] &&!this.attacking && this.ki > 5) this.attack('kiblast');
+            this.handleMovement('a', 'd', 'w', 's');
+            if(keys['j'] &&!this.attacking && this.ki > 3) this.attack('kiblast');
             if(keys['k'] &&!this.attacking) this.attack('punch');
-            if(keys['l'] &&!this.attacking && this.ki >= 30) this.attack('wave');
+            if(keys['l']) this.chargeKi(); else this.stopCharging();
         }
         // CONTROLES P2
         else if(gameMode === 'vs2p') {
-            if(keys['arrowleft']) { this.vx = -this.speed; this.facing = -1; }
-            else if(keys['arrowright']) { this.vx = this.speed; this.facing = 1; }
-            else this.vx = 0;
-
-            if(keys['arrowup']) {
-                this.flying = true;
-                this.vy = -this.flySpeed;
-            } else if(keys['arrowdown']) {
-                this.vy = this.flySpeed;
-            } else if(this.flying) {
-                this.vy = 0;
-            } else {
-                this.vy += this.gravity;
-            }
-
-            if(keys['1'] &&!this.attacking && this.ki > 5) this.attack('kiblast');
+            this.handleMovement('arrowleft', 'arrowright', 'arrowup', 'arrowdown');
+            if(keys['1'] &&!this.attacking && this.ki > 3) this.attack('kiblast');
             if(keys['2'] &&!this.attacking) this.attack('punch');
-            if(keys['3'] &&!this.attacking && this.ki >= 30) this.attack('wave');
+            if(keys['3']) this.chargeKi(); else this.stopCharging();
         }
         // IA
         else {
-            if(this.x > player1.x + 100) { this.vx = -this.speed; this.facing = -1; }
-            else if(this.x < player1.x - 100) { this.vx = this.speed; this.facing = 1; }
+            if(this.x > player1.x + 120) this.vx = -this.speed;
+            else if(this.x < player1.x - 120) this.vx = this.speed;
             else this.vx = 0;
-            if(Math.random() < 0.02 && this.ki > 5) this.attack('kiblast');
+            if(Math.random() < 0.015 && this.ki > 10) this.attack('kiblast');
         }
 
-        this.x += this.vx;
-        this.y += this.vy;
+        this.x += this.vx; this.y += this.vy;
 
-        // Límites pantalla completa para vuelo
-        if(this.x < 0) this.x = 0;
-        if(this.x + this.w > 900) this.x = 900 - this.w;
-        if(this.y < 0) this.y = 0;
-        if(this.y + this.h > 450) this.y = 450 - this.h;
+        if(!this.flying && this.y + this.h < 480) this.vy += this.gravity;
+        if(this.flying) this.vy = 0;
 
-        if(!this.flying && this.y + this.h < 400) {
-            this.vy += this.gravity;
-        }
+        // Límites
+        this.x = Math.max(0, Math.min(960, this.x));
+        this.y = Math.max(0, Math.min(490, this.y));
 
-        if(this.attacking) {
-            this.attackTimer--;
-            if(this.attackTimer <= 0) this.attacking = false;
-        }
-
-        if(this.ki < 100) this.ki += 0.2;
-        if(this.flying) this.ki -= 0.3;
-
-        this.checkHit();
+        if(this.dashCooldown > 0) this.dashCooldown--;
         if(this.auraTimer > 0) this.auraTimer--;
+
+        this.checkKiBlastCollision();
+    }
+
+    handleMovement(left, right, up, down) {
+        if(keys[left]) {
+            this.checkDash(left);
+            this.vx = -this.speed; this.facing = -1;
+        } else if(keys[right]) {
+            this.checkDash(right);
+            this.vx = this.speed; this.facing = 1;
+        } else this.vx = 0;
+
+        if(keys[up]) { this.flying = true; this.vy = -this.flySpeed; this.ki -= 0.4; }
+        else if(keys[down]) { this.vy = this.flySpeed; this.ki -= 0.2; }
+        else if(this.flying) { this.vy = 0; }
+    }
+
+    checkDash(key) {
+        const now = Date.now();
+        if(this.lastMove === key && now - lastTap[key] < 250 && this.dashCooldown === 0) {
+            this.vx = this.facing * this.speed * 2.5;
+            this.dashCooldown = 30;
+        }
+        lastTap[key] = now;
+        this.lastMove = key;
+    }
+
+    chargeKi() {
+        if(this.ki < 100 &&!this.attacking) {
+            this.charging = true;
+            this.kiPower = Math.min(100, this.kiPower + 1.5);
+            this.ki += 0.3;
+            this.auraTimer = 10;
+        }
+    }
+
+    stopCharging() {
+        if(this.charging && this.kiPower > 30) {
+            this.attack('bigblast');
+        }
+        this.charging = false;
+        this.kiPower = 0;
     }
 
     attack(type) {
-        this.attacking = true;
-        this.attackType = type;
-        this.auraTimer = 20;
+        this.attacking = true; this.auraTimer = 15;
 
         if(type === 'kiblast') {
-            this.attackTimer = 10;
-            this.ki -= 5;
-            const blast = new KiBlast(
-                this.x + (this.facing > 0? this.w : -12),
+            this.attacking = false;
+            this.ki -= 4;
+            kiBlasts.push(new KiBlast(
+                this.x + (this.facing > 0? this.w : -15),
+                this.y + 22,
+                this.facing * 9,
+                this.data.aura,
+                10
+            ));
+        }
+        if(type === 'bigblast') {
+            setTimeout(() => { this.attacking = false; }, 40);
+            this.ki -= 25;
+            kiBlasts.push(new KiBlast(
+                this.x + (this.facing > 0? this.w : -30),
                 this.y + 20,
-                this.facing * 8,
-                this.aura
-            );
-            kiBlasts.push(blast);
+                this.facing * 7,
+                this.data.aura,
+                this.kiPower
+            ));
         }
         if(type === 'punch') {
-            this.attackTimer = 15;
-        }
-        if(type === 'wave') {
-            this.attackTimer = 35;
-            this.ki -= 30;
+            setTimeout(() => { this.attacking = false; }, 15);
         }
     }
 
-    checkHit() {
-        if(!this.attacking || this.attackType!== 'punch') return;
+    checkKiBlastCollision() {
         const target = this.isPlayer1? player2 : player1;
         const range = 50;
         const hitX = this.x + (this.facing > 0? this.w : -range);
 
-        if(hitX < target.x + target.w &&
-           hitX + range > target.x &&
-           this.y < target.y + target.h &&
-           this.y + this.h > target.y) {
+        if(this.attacking && hitX < target.x + target.w && hitX + range > target.x &&
+           this.y < target.y + target.h && this.y + this.h > target.y) {
             target.hp -= 8;
             target.hp = Math.max(0, target.hp);
             this.attacking = false;
-            updateHealth();
+            updateUI();
             if(target.hp <= 0) {
-                winner = this.isPlayer1? chars[selectedChar].name + ' GANA!' : 'ENEMIGO GANA!';
+                winner = this.data.name + ' GANA!';
                 setTimeout(() => location.reload(), 4000);
             }
         }
@@ -472,132 +466,96 @@ class Warrior {
         ctx.save();
         if(this.facing < 0) {
             ctx.scale(-1, 1);
-            ctx.translate(-900, 0);
+            ctx.translate(-1000, 0);
         }
 
-        // Aura cuando vuela o ataca
-        if(this.flying || this.auraTimer > 0) {
-            ctx.fillStyle = this.aura + '40';
+        // Aura cuando carga ki o vuela
+        if(this.charging || this.flying || this.auraTimer > 0) {
+            const auraSize = 20 + this.kiPower/3;
+            ctx.fillStyle = this.data.aura + '30';
             ctx.beginPath();
-            ctx.ellipse(this.x + this.w/2, this.y + this.h/2, this.w + 20, this.h + 20, 0, 0, Math.PI * 2);
+            ctx.ellipse(this.x + this.w/2, this.y + this.h/2, this.w + auraSize, this.h + auraSize, 0, 0, Math.PI*2);
             ctx.fill();
+
+            // Rayos cuando carga al máximo
+            if(this.kiPower > 70) {
+                ctx.strokeStyle = '#FFFFFF';
+                ctx.lineWidth = 2;
+                for(let i = 0; i < 8; i++) {
+                    const angle = (i/8) * Math.PI*2;
+                    ctx.beginPath();
+                    ctx.moveTo(this.x + this.w/2, this.y + this.h/2);
+                    ctx.lineTo(this.x + this.w/2 + Math.cos(angle) * (40 + this.kiPower/2),
+                               this.y + this.h/2 + Math.sin(angle) * (40 + this.kiPower/2));
+                    ctx.stroke();
+                }
+            }
         }
 
-        ctx.fillStyle = this.glow + '60';
+        ctx.fillStyle = this.data.glow + '60';
         ctx.fillRect(this.x-6, this.y-6, this.w+12, this.h+12);
 
-        ctx.fillStyle = this.color;
+        ctx.fillStyle = this.data.color;
         ctx.fillRect(this.x, this.y, this.w, this.h);
         ctx.fillRect(this.x+10, this.y-12, 20, 20);
 
         ctx.fillStyle = '#000';
-        ctx.fillRect(this.x+16, this.y-8, 3, 3);
-        ctx.fillRect(this.x+24, this.y-8, 3, 3);
+        ctx.fillRect(this.x+15, this.y-8, 3, 3);
+        ctx.fillRect(this.x+23, this.y-8, 3, 3);
 
-        if(this.attacking && this.attackType === 'wave') {
-            ctx.fillStyle = this.aura + 'CC';
-            ctx.fillRect(this.x + (this.facing > 0? this.w : -80), this.y + 15, 80, 30);
-            ctx.fillStyle = '#FFF';
-            ctx.font = '18px Courier New';
-            ctx.fillText(this.attackType === 'wave'? chars[selectedChar].special : '',
-                this.x + (this.facing > 0? this.w + 10 : -70), this.y + 35);
+        // Ki cargado en mano
+        if(this.charging) {
+            ctx.fillStyle = this.data.aura;
+            ctx.beginPath();
+            ctx.arc(this.x + this.w + 15, this.y + 20, 8 + this.kiPower/10, 0, Math.PI*2);
+            ctx.fill();
         }
         ctx.restore();
     }
 }
 
-function updateHealth() {
+function updateUI() {
     document.getElementById('hp1').style.width = player1.hp + '%';
     document.getElementById('hp2').style.width = player2.hp + '%';
     document.getElementById('ki1').style.width = player1.ki + '%';
     document.getElementById('ki2').style.width = player2.ki + '%';
     document.getElementById('hpText1').textContent = player1.hp + '/100';
     document.getElementById('hpText2').textContent = player2.hp + '/100';
-    document.getElementById('flight1').textContent = player1.flying? 'VOLANDO' : '';
-    document.getElementById('flight2').textContent = player2.flying? 'VOLANDO' : '';
+}
+
+function checkPowerClash() {
+    for(let i = 0; i < kiBlasts.length; i++) {
+        for(let j = i+1; j < kiBlasts.length; j++) {
+            const b1 = kiBlasts[i], b2 = kiBlasts[j];
+            if(Math.abs(b1.x - b2.x) < 30 && Math.abs(b1.y - b2.y) < 30) {
+                powerClash = true;
+                document.getElementById('clashText').style.display = 'block';
+
+                // Explosión gigante
+                ctx.fillStyle = '#FFFFFF';
+                ctx.beginPath();
+                ctx.arc((b1.x + b2.x)/2, (b1.y + b2.y)/2, 100, 0, Math.PI*2);
+                ctx.fill();
+
+                setTimeout(() => {
+                    kiBlasts = kiBlasts.filter(b => b!== b1 && b!== b2);
+                    powerClash = false;
+                    document.getElementById('clashText').style.display = 'none';
+                }, 1500);
+                return;
+            }
+        }
+    }
 }
 
 function gameLoop() {
-    ctx.clearRect(0, 0, 900, 500);
-    // Fondo espacio/cielo
-    const gradient = ctx.createLinearGradient(0, 0, 0, 500);
-    gradient.addColorStop(0, '#0a0a2a');
-    gradient.addColorStop(1, '#1a1a4a');
+    ctx.clearRect(0, 0, 1000, 550);
+
+    // Fondo pixel desierto/montañas
+    const gradient = ctx.createLinearGradient(0, 0, 0, 550);
+    gradient.addColorStop(0, '#87CEEB');
+    gradient.addColorStop(1, '#F4A460');
     ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 900, 500);
+    ctx.fillRect(0, 0, 1000, 550);
 
-    // Estrellas
-    ctx.fillStyle = '#fff';
-    for(let i = 0; i < 50; i++) {
-        ctx.fillRect((i*18) % 900, (i*11) % 500, 2, 2);
-    }
-
-    if(gameStarted) {
-        player1.update();
-        player2.update();
-
-        // Update Ki Blasts
-        kiBlasts = kiBlasts.filter(blast => {
-            blast.update();
-            blast.draw();
-
-            const target = blast.speed > 0? player2 : player1;
-            if(blast.x > target.x && blast.x < target.x + target.w &&
-               blast.y > target.y && blast.y < target.y + target.h) {
-                target.hp -= 6;
-                updateHealth();
-                return false;
-            }
-            return blast.x > -20 && blast.x < 920;
-        });
-
-        player1.draw();
-        player2.draw();
-
-        if(winner) {
-            ctx.fillStyle = 'rgba(0,0,0,0.8)';
-            ctx.fillRect(0, 0, 900, 500);
-            ctx.fillStyle = '#FFD700';
-            ctx.font = '56px Courier New';
-            ctx.textAlign = 'center';
-            ctx.fillText(winner, 450, 250);
-            ctx.font = '24px Courier New';
-            ctx.fillText('Reiniciando...', 450, 300);
-        }
-    }
-    requestAnimationFrame(gameLoop);
-}
-
-window.startGame = function() {
-    document.getElementById('menu').style.display = 'none';
-    const char = chars[selectedChar];
-    player1 = new Warrior(200, char.color, char.glow, char.aura, true);
-    player2 = new Warrior(660, gameMode === 'vs2p'? '#00FF88' : '#888', '#AAA', '#CCC', false);
-    gameStarted = true;
-    initMusic();
-}
-
-window.keyDown = function(k) { keys[k] = true; }
-window.keyUp = function(k) { keys[k] = false; }
-
-document.addEventListener('keydown', e => {
-    const key = e.key.toLowerCase();
-    if(key === 'arrowleft') keys['arrowleft'] = true;
-    else if(key === 'arrowright') keys['arrowright'] = true;
-    else if(key === 'arrowup') keys['arrowup'] = true;
-    else if(key === 'arrowdown') keys['arrowdown'] = true;
-    else keys[key] = true;
-});
-document.addEventListener('keyup', e => {
-    const key = e.key.toLowerCase();
-    if(key === 'arrowleft') keys['arrowleft'] = false;
-    else if(key === 'arrowright') keys['arrowright'] = false;
-    else if(key === 'arrowup') keys['arrowup'] = false;
-    else if(key === 'arrowdown') keys['arrowdown'] = false;
-    else keys[key] = false;
-});
-
-gameLoop();
-</script>
-</body>
-</html>
+    // Montañas p
