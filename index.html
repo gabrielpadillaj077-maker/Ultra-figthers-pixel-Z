@@ -2,560 +2,142 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Ultra Warriors Z - Battle Royale</title>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-    background: #000;
-    font-family: 'Courier New', monospace;
-    overflow: hidden;
-    touch-action: none;
-}
-canvas {
-    display: block;
-    margin: 0 auto;
-    border: 4px solid #FFD700;
-}
-.menu {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(to bottom, #1a1a4a 0%, #0a0a2a 100%);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    z-index: 10;
-}
-.menu h1 {
-    font-size: 52px;
-    color: #FFD700;
-    text-shadow: 4px 4px 0 #FF4500, 0 0 30px #FFD700;
-    margin-bottom: 30px;
-    animation: glow 1.5s ease-in-out infinite alternate;
-}
-@keyframes glow {
-    from { text-shadow: 4px 4px 0 #FF4500; }
-    to { text-shadow: 4px 4px 0 #FF4500, 0 0 40px #FFD700; }
-}
-.mode-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 15px;
-    margin: 20px 0;
-}
-.menu button {
-    padding: 18px 60px;
-    font-size: 22px;
-    background: linear-gradient(135deg, #FF4500, #FFD700);
-    border: 4px solid #fff;
-    color: #000;
-    font-weight: bold;
-    cursor: pointer;
-    font-family: 'Courier New', monospace;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(255,215,0,0.5);
-}
-.menu button:hover { transform: scale(1.08); box-shadow: 0 0 30px #FFD700; }
-.char-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
-    margin: 20px 0;
-    max-width: 900px;
-    max-height: 400px;
-    overflow-y: auto;
-    padding: 10px;
-}
-.char {
-    width: 100px;
-    height: 140px;
-    border: 3px solid #555;
-    cursor: pointer;
-    background: #222;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: 0.2s;
-    border-radius: 8px;
-}
-.char:hover,.char.selected {
-    border-color: #00FFFF;
-    transform: scale(1.15);
-    box-shadow: 0 0 25px #00FFFF;
-    background: #333;
-}
-.char canvas { border: none; width: 70px; height: 70px; }
-.char-name { margin-top: 5px; font-size: 9px; color: #FFD700; text-align: center; }
-.controls {
-    position: absolute;
-    bottom: 20px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 20px;
-    z-index: 5;
-}
-.btn {
-    width: 70px;
-    height: 70px;
-    background: rgba(255,255,255,0.25);
-    border: 3px solid #00FFFF;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    color: #fff;
-    font-weight: bold;
-    user-select: none;
-}
-.btn:active { background: rgba(0,255,255,0.6); }
-.left-btns,.right-btns { display: flex; gap: 8px; flex-wrap: wrap; }
-.health-bar {
-    position: absolute;
-    top: 20px;
-    width: 35%;
-    height: 28px;
-    border: 3px solid #FFD700;
-    background: #333;
-    border-radius: 5px;
-}
-.health-bar.p1 { left: 20px; }
-.health-bar.p2 { right: 20px; }
-.health-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #00FF00, #FFFF00, #FF0000);
-    transition: width 0.2s;
-}
-.health-text {
-    position: absolute;
-    top: 52px;
-    color: #FFD700;
-    font-size: 16px;
-    font-weight: bold;
-    text-shadow: 2px 2px 0 #000;
-}
-.health-text.p1 { left: 20px; }
-.health-text.p2 { right: 20px; }
-.ki-bar {
-    position: absolute;
-    top: 85px;
-    width: 200px;
-    height: 15px;
-    border: 2px solid #00FFFF;
-    background: #000;
-    border-radius: 3px;
-}
-.ki-bar.p1 { left: 20px; }
-.ki-bar.p2 { right: 20px; }
-.ki-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #00BFFF, #00FFFF, #FFFFFF);
-    width: 0%;
-    transition: width 0.1s;
-}
-.power-clash {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 48px;
-    color: #FFD700;
-    font-weight: bold;
-    text-shadow: 0 0 20px #FFF;
-    display: none;
-    z-index: 20;
-    animation: clash 0.5s infinite;
-}
-@keyframes clash {
-    0%, 100% { transform: translate(-50%, -50%) scale(1); }
-    50% { transform: translate(-50%, -50%) scale(1.2); }
-}
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultra Warriors Z - Battle Arena</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
+
 <body>
-<canvas id="game" width="1000" height="550"></canvas>
-<div class="power-clash" id="clashText">¡CHOQUE DE PODERES!</div>
 
-<div class="menu" id="menu">
-    <h1>ULTRA WARRIORS Z</h1>
+<canvas id="gameCanvas"></canvas>
 
-    <div class="mode-grid">
-        <button onclick="showCharSelect('vsai')">BATALLA VS CPU</button>
-        <button onclick="showCharSelect('vs2p')">2 JUGADORES</button>
-        <button onclick="alert('MODO HISTORIA PRÓXIMAMENTE')">MODO HISTORIA</button>
-    </div>
 
-    <div id="charSelect" style="display:none;">
-        <p style="margin-bottom: 10px; font-size: 18px; color: #00FFFF;">ELIGE TU GUERRERO:</p>
-        <div class="char-grid" id="charGrid"></div>
-        <button onclick="startGame()">¡A PELEAR!</button>
-    </div>
+<!-- MENÚ PRINCIPAL -->
+<div id="menu">
 
-    <p style="margin-top: 15px; font-size: 11px; color: #aaa; text-align: center; max-width: 800px;">
-        P1: A/D mover + DASH, W volar, S bajar, J ki-blast, K puño, L CARGAR KI<br>
-        P2: ←/→ mover + DASH, ↑ volar, ↓ bajar, 1 ki-blast, 2 puño, 3 CARGAR KI<br>
-        DOBLE TAP A/D = DASH. MANTÉN L/3 PARA CARGAR KI Y HACER CHOQUES ÉPICOS
-    </p>
+<h1>ULTRA WARRIORS Z</h1>
+
+<button onclick="startMode('cpu')">
+BATALLA VS CPU
+</button>
+
+<button onclick="startMode('pvp')">
+2 JUGADORES
+</button>
+
+
+<div id="characterBox">
+
+<h2>ELIGE GUERRERO</h2>
+
+<div id="characters"></div>
+
 </div>
 
-<div class="health-bar p1"><div class="health-fill" id="hp1" style="width: 100%"></div></div>
-<div class="ki-bar p1"><div class="ki-fill" id="ki1"></div></div>
-<div class="health-text p1" id="hpText1">100/100</div>
-
-<div class="health-bar p2"><div class="health-fill" id="hp2" style="width: 100%"></div></div>
-<div class="ki-bar p2"><div class="ki-fill" id="ki2"></div></div>
-<div class="health-text p2" id="hpText2">100/100</div>
-
-<div class="controls" id="controls">
-    <div class="left-btns">
-        <div class="btn" ontouchstart="keyDown('a')" ontouchend="keyUp('a')">◀</div>
-        <div class="btn" ontouchstart="keyDown('w')" ontouchend="keyUp('w')">▲</div>
-        <div class="btn" ontouchstart="keyDown('s')" ontouchend="keyUp('s')">▼</div>
-        <div class="btn" ontouchstart="keyDown('d')" ontouchend="keyUp('d')">▶</div>
-    </div>
-    <div class="right-btns">
-        <div class="btn" ontouchstart="keyDown('j')" ontouchend="keyUp('j')">KI</div>
-        <div class="btn" ontouchstart="keyDown('k')" ontouchend="keyUp('k')">PUÑO</div>
-        <div class="btn" ontouchstart="keyDown('l')" ontouchend="keyUp('l')">CARGAR</div>
-    </div>
 </div>
 
-<script>
-const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
 
-let player1, player2, keys = {}, gameStarted = false, selectedChar = 0, gameMode = 'vsai';
-let winner = null, kiBlasts = [], lastTap = {}, powerClash = false;
 
-// 20 GUERREROS ORIGINALES - INSPIRADOS EN ESTILO PIXEL
-const warriors = [
-    { name: 'KAROT', color: '#FF8C00', glow: '#FFD700', aura: '#FFA500', special: 'ONDA KI', desc: 'Saiyan Clásico' },
-    { name: 'VEGETOR', color: '#4169E1', glow: '#87CEEB', aura: '#1E90FF', special: 'CAÑON KI', desc: 'Príncipe Azul' },
-    { name: 'PICOLAR', color: '#228B22', glow: '#32CD32', aura: '#00FF00', special: 'RAYO VERDE', desc: 'Guerrero Verde' },
-    { name: 'GOHAR', color: '#FF8C00', glow: '#FFD700', aura: '#FFA500', special: 'KAMEHAME', desc: 'Chico Poder' },
-    { name: 'TRUNKAR', color: '#8B4513', glow: '#D2691E', aura: '#CD853F', special: 'CORTE ESPADA', desc: 'Espada Futuro' },
-    { name: 'CELLAR', color: '#228B22', glow: '#9ACD32', aura: '#ADFF2F', special: 'KAME PERFECTO', desc: 'Androide Verde' },
-    { name: 'FREZER', color: '#9370DB', glow: '#DDA0DD', aura: '#E6E6FA', special: 'DEATH BEAM', desc: 'Tirano Morado' },
-    { name: 'BUOR', color: '#FF69B4', glow: '#FFB6C1', aura: '#FFC0CB', special: 'KI MÁGICO', desc: 'Mágico Rosa' },
-    { name: 'BLACKAR', color: '#2F4F4F', glow: '#8B0000', aura: '#DC143C', special: 'KI ROSADO', desc: 'Saiyan Oscuro' },
-    { name: 'JIRAN', color: '#696969', glow: '#FF0000', aura: '#FF6347', special: 'PUÑO PODER', desc: 'Guerrero Gris' },
-    { name: 'HITAR', color: '#4B0082', glow: '#9400D3', aura: '#8A2BE2', special: 'TIME SKIP', desc: 'Asesino Morado' },
-    { name: 'BROLYR', color: '#32CD32', glow: '#00FF00', aura: '#ADFF2F', special: 'ERUPCIÓN', desc: 'Saiyan Verde' },
-    { name: 'ZAMASU', color: '#9370DB', glow: '#DDA0DD', aura: '#BA55D3', special: 'KI DIVINO', desc: 'Dios Rosa' },
-    { name: 'ANDRO18', color: '#FFB6C1', glow: '#FF69B4', aura: '#FFC0CB', special: 'KI ELÉCTRICO', desc: 'Androide Rubia' },
-    { name: 'TENSHIN', color: '#F0E68C', glow: '#DAA520', aura: '#B8860B', special: 'TRI-BEAM', desc: '3 Ojos' },
-    { name: 'KRILLAR', color: '#FFDAB9', glow: '#FFE4B5', aura: '#FFDEAD', special: 'DISCO KI', desc: 'Calvo Poder' },
-    { name: 'YAMCHAR', color: '#8B4513', glow: '#A0522D', aura: '#CD853F', special: 'LOBO KI', desc: 'Lobo Desert' },
-    { name: 'TIENSHIN', color: '#F0E68C', glow: '#DAA520', aura: '#B8860B', special: 'CUADRUPLE', desc: '4 Brazos' },
-    { name: 'COOLER', color: '#483D8B', glow: '#6A5ACD', aura: '#7B68EE', special: 'SUPERNOVA', desc: 'Tirano Azul' },
-    { name: 'JANEMBA', color: '#8B0000', glow: '#FF0000', aura: '#DC143C', special: 'KI DEMONIO', desc: 'Demonio Rojo' }
-];
+<!-- HUD -->
 
-// Generar grid de personajes
-function generateCharGrid() {
-    const grid = document.getElementById('charGrid');
-    grid.innerHTML = '';
-    warriors.forEach((w, i) => {
-        const div = document.createElement('div');
-        div.className = 'char';
-        div.dataset.char = i;
-        div.innerHTML = `<canvas id="char${i}"></canvas><div class="char-name">${w.name}<br>${w.desc}</div>`;
-        grid.appendChild(div);
+<div id="hud">
 
-        setTimeout(() => {
-            const pc = document.getElementById('char' + i).getContext('2d');
-            drawWarriorSprite(pc, 35, 50, w.color, w.glow, 1.5);
-        }, 100);
-    });
+<div class="player">
 
-    document.querySelectorAll('.char').forEach(el => {
-        el.onclick = () => {
-            document.querySelectorAll('.char').forEach(c => c.classList.remove('selected'));
-            el.classList.add('selected');
-            selectedChar = parseInt(el.dataset.char);
-        };
-    });
-    document.querySelector('.char').classList.add('selected');
-}
+<h3 id="name1">
+GUERRERO 1
+</h3>
 
-function drawWarriorSprite(ctx, x, y, color, glow, scale = 2) {
-    ctx.fillStyle = glow + '80';
-    ctx.fillRect(x-8, y-12, 16, 24);
-    ctx.fillStyle = color;
-    ctx.fillRect(x-5*scale, y-10*scale, 10*scale, 10*scale);
-    ctx.fillRect(x-4*scale, y, 8*scale, 14*scale);
-    ctx.fillRect(x-7*scale, y+3*scale, 3*scale, 9*scale);
-    ctx.fillRect(x+4*scale, y+3*scale, 3*scale, 9*scale);
-    ctx.fillRect(x-4*scale, y+14*scale, 3*scale, 8*scale);
-    ctx.fillRect(x+1*scale, y+14*scale, 3*scale, 8*scale);
-    ctx.fillStyle = '#000';
-    ctx.fillRect(x-2*scale, y-6*scale, 2*scale, 2*scale);
-    ctx.fillRect(x+0*scale, y-6*scale, 2*scale, 2*scale);
-}
+<div class="bar">
+<div id="life1"></div>
+</div>
 
-window.showCharSelect = function(mode) {
-    gameMode = mode;
-    document.querySelector('.mode-grid').style.display = 'none';
-    document.getElementById('charSelect').style.display = 'block';
-    generateCharGrid();
-    document.getElementById('controls').style.display = mode === 'vsai'? 'flex' : 'none';
-}
+<div class="ki">
+<div id="ki1"></div>
+</div>
 
-class KiBlast {
-    constructor(x, y, speed, color, power) {
-        this.x = x; this.y = y; this.speed = speed;
-        this.w = 8 + power/5; this.h = 6 + power/8;
-        this.color = color; this.power = power;
-    }
-    update() { this.x += this.speed; }
-    draw() {
-        ctx.fillStyle = this.color + 'AA';
-        ctx.beginPath();
-        ctx.arc(this.x + this.w/2, this.y + this.h/2, this.w/2 + 5, 0, Math.PI*2);
-        ctx.fill();
-        ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.w, this.h);
-    }
-}
+</div>
 
-class Warrior {
-    constructor(x, data, isPlayer1) {
-        this.x = x; this.y = 300; this.w = 40; this.h = 60;
-        this.data = data; this.isPlayer1 = isPlayer1;
-        this.vx = 0; this.vy = 0; this.speed = 5.5; this.flySpeed = 4.5;
-        this.gravity = 0.5; this.hp = 100; this.ki = 100; this.kiPower = 0;
-        this.flying = false; this.attacking = false; this.charging = false;
-        this.facing = isPlayer1? 1 : -1; this.auraTimer = 0;
-        this.dashCooldown = 0; this.lastMove = '';
-    }
 
-    update() {
-        if(winner || powerClash) return;
 
-        // CONTROLES P1
-        if(this.isPlayer1) {
-            this.handleMovement('a', 'd', 'w', 's');
-            if(keys['j'] &&!this.attacking && this.ki > 3) this.attack('kiblast');
-            if(keys['k'] &&!this.attacking) this.attack('punch');
-            if(keys['l']) this.chargeKi(); else this.stopCharging();
-        }
-        // CONTROLES P2
-        else if(gameMode === 'vs2p') {
-            this.handleMovement('arrowleft', 'arrowright', 'arrowup', 'arrowdown');
-            if(keys['1'] &&!this.attacking && this.ki > 3) this.attack('kiblast');
-            if(keys['2'] &&!this.attacking) this.attack('punch');
-            if(keys['3']) this.chargeKi(); else this.stopCharging();
-        }
-        // IA
-        else {
-            if(this.x > player1.x + 120) this.vx = -this.speed;
-            else if(this.x < player1.x - 120) this.vx = this.speed;
-            else this.vx = 0;
-            if(Math.random() < 0.015 && this.ki > 10) this.attack('kiblast');
-        }
+<div class="player right">
 
-        this.x += this.vx; this.y += this.vy;
+<h3 id="name2">
+GUERRERO 2
+</h3>
 
-        if(!this.flying && this.y + this.h < 480) this.vy += this.gravity;
-        if(this.flying) this.vy = 0;
+<div class="bar">
+<div id="life2"></div>
+</div>
 
-        // Límites
-        this.x = Math.max(0, Math.min(960, this.x));
-        this.y = Math.max(0, Math.min(490, this.y));
+<div class="ki">
+<div id="ki2"></div>
+</div>
 
-        if(this.dashCooldown > 0) this.dashCooldown--;
-        if(this.auraTimer > 0) this.auraTimer--;
+</div>
 
-        this.checkKiBlastCollision();
-    }
+</div>
 
-    handleMovement(left, right, up, down) {
-        if(keys[left]) {
-            this.checkDash(left);
-            this.vx = -this.speed; this.facing = -1;
-        } else if(keys[right]) {
-            this.checkDash(right);
-            this.vx = this.speed; this.facing = 1;
-        } else this.vx = 0;
 
-        if(keys[up]) { this.flying = true; this.vy = -this.flySpeed; this.ki -= 0.4; }
-        else if(keys[down]) { this.vy = this.flySpeed; this.ki -= 0.2; }
-        else if(this.flying) { this.vy = 0; }
-    }
 
-    checkDash(key) {
-        const now = Date.now();
-        if(this.lastMove === key && now - lastTap[key] < 250 && this.dashCooldown === 0) {
-            this.vx = this.facing * this.speed * 2.5;
-            this.dashCooldown = 30;
-        }
-        lastTap[key] = now;
-        this.lastMove = key;
-    }
+<!-- MENSAJE DE ATAQUES -->
 
-    chargeKi() {
-        if(this.ki < 100 &&!this.attacking) {
-            this.charging = true;
-            this.kiPower = Math.min(100, this.kiPower + 1.5);
-            this.ki += 0.3;
-            this.auraTimer = 10;
-        }
-    }
+<div id="message">
+</div>
 
-    stopCharging() {
-        if(this.charging && this.kiPower > 30) {
-            this.attack('bigblast');
-        }
-        this.charging = false;
-        this.kiPower = 0;
-    }
 
-    attack(type) {
-        this.attacking = true; this.auraTimer = 15;
 
-        if(type === 'kiblast') {
-            this.attacking = false;
-            this.ki -= 4;
-            kiBlasts.push(new KiBlast(
-                this.x + (this.facing > 0? this.w : -15),
-                this.y + 22,
-                this.facing * 9,
-                this.data.aura,
-                10
-            ));
-        }
-        if(type === 'bigblast') {
-            setTimeout(() => { this.attacking = false; }, 40);
-            this.ki -= 25;
-            kiBlasts.push(new KiBlast(
-                this.x + (this.facing > 0? this.w : -30),
-                this.y + 20,
-                this.facing * 7,
-                this.data.aura,
-                this.kiPower
-            ));
-        }
-        if(type === 'punch') {
-            setTimeout(() => { this.attacking = false; }, 15);
-        }
-    }
+<!-- CONTROLES MÓVILES -->
 
-    checkKiBlastCollision() {
-        const target = this.isPlayer1? player2 : player1;
-        const range = 50;
-        const hitX = this.x + (this.facing > 0? this.w : -range);
+<div id="mobileControls">
 
-        if(this.attacking && hitX < target.x + target.w && hitX + range > target.x &&
-           this.y < target.y + target.h && this.y + this.h > target.y) {
-            target.hp -= 8;
-            target.hp = Math.max(0, target.hp);
-            this.attacking = false;
-            updateUI();
-            if(target.hp <= 0) {
-                winner = this.data.name + ' GANA!';
-                setTimeout(() => location.reload(), 4000);
-            }
-        }
-    }
 
-    draw() {
-        ctx.save();
-        if(this.facing < 0) {
-            ctx.scale(-1, 1);
-            ctx.translate(-1000, 0);
-        }
+<div class="left">
 
-        // Aura cuando carga ki o vuela
-        if(this.charging || this.flying || this.auraTimer > 0) {
-            const auraSize = 20 + this.kiPower/3;
-            ctx.fillStyle = this.data.aura + '30';
-            ctx.beginPath();
-            ctx.ellipse(this.x + this.w/2, this.y + this.h/2, this.w + auraSize, this.h + auraSize, 0, 0, Math.PI*2);
-            ctx.fill();
+<button ontouchstart="press('a')" ontouchend="release('a')">
+◀
+</button>
 
-            // Rayos cuando carga al máximo
-            if(this.kiPower > 70) {
-                ctx.strokeStyle = '#FFFFFF';
-                ctx.lineWidth = 2;
-                for(let i = 0; i < 8; i++) {
-                    const angle = (i/8) * Math.PI*2;
-                    ctx.beginPath();
-                    ctx.moveTo(this.x + this.w/2, this.y + this.h/2);
-                    ctx.lineTo(this.x + this.w/2 + Math.cos(angle) * (40 + this.kiPower/2),
-                               this.y + this.h/2 + Math.sin(angle) * (40 + this.kiPower/2));
-                    ctx.stroke();
-                }
-            }
-        }
+<button ontouchstart="press('d')" ontouchend="release('d')">
+▶
+</button>
 
-        ctx.fillStyle = this.data.glow + '60';
-        ctx.fillRect(this.x-6, this.y-6, this.w+12, this.h+12);
+<button ontouchstart="press('w')" ontouchend="release('w')">
+▲
+</button>
 
-        ctx.fillStyle = this.data.color;
-        ctx.fillRect(this.x, this.y, this.w, this.h);
-        ctx.fillRect(this.x+10, this.y-12, 20, 20);
+<button ontouchstart="press('s')" ontouchend="release('s')">
+▼
+</button>
 
-        ctx.fillStyle = '#000';
-        ctx.fillRect(this.x+15, this.y-8, 3, 3);
-        ctx.fillRect(this.x+23, this.y-8, 3, 3);
+</div>
 
-        // Ki cargado en mano
-        if(this.charging) {
-            ctx.fillStyle = this.data.aura;
-            ctx.beginPath();
-            ctx.arc(this.x + this.w + 15, this.y + 20, 8 + this.kiPower/10, 0, Math.PI*2);
-            ctx.fill();
-        }
-        ctx.restore();
-    }
-}
 
-function updateUI() {
-    document.getElementById('hp1').style.width = player1.hp + '%';
-    document.getElementById('hp2').style.width = player2.hp + '%';
-    document.getElementById('ki1').style.width = player1.ki + '%';
-    document.getElementById('ki2').style.width = player2.ki + '%';
-    document.getElementById('hpText1').textContent = player1.hp + '/100';
-    document.getElementById('hpText2').textContent = player2.hp + '/100';
-}
 
-function checkPowerClash() {
-    for(let i = 0; i < kiBlasts.length; i++) {
-        for(let j = i+1; j < kiBlasts.length; j++) {
-            const b1 = kiBlasts[i], b2 = kiBlasts[j];
-            if(Math.abs(b1.x - b2.x) < 30 && Math.abs(b1.y - b2.y) < 30) {
-                powerClash = true;
-                document.getElementById('clashText').style.display = 'block';
+<div class="right">
 
-                // Explosión gigante
-                ctx.fillStyle = '#FFFFFF';
-                ctx.beginPath();
-                ctx.arc((b1.x + b2.x)/2, (b1.y + b2.y)/2, 100, 0, Math.PI*2);
-                ctx.fill();
+<button ontouchstart="press('j')" ontouchend="release('j')">
+PUÑO
+</button>
 
-                setTimeout(() => {
-                    kiBlasts = kiBlasts.filter(b => b!== b1 && b!== b2);
-                    powerClash = false;
-                    document.getElementById('clashText').style.display = 'none';
-                }, 1500);
-                return;
-            }
-        }
-    }
-}
+<button ontouchstart="press('k')" ontouchend="release('k')">
+KI
+</button>
 
-function gameLoop() {
-    ctx.clearRect(0, 0, 1000, 550);
+<button ontouchstart="press('l')" ontouchend="release('l')">
+CARGAR
+</button>
 
-    // Fondo pixel desierto/montañas
-    const gradient = ctx.createLinearGradient(0, 0, 0, 550);
-    gradient.addColorStop(0, '#87CEEB');
-    gradient.addColorStop(1, '#F4A460');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 1000, 550);
+</div>
 
-    // Montañas p
+
+</div>
+
+
+
+<script src="game.js"></script>
+
+</body>
+</html>
